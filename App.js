@@ -9,6 +9,7 @@ import todayImage from './assets/imgs/today.jpg';
 import moment from 'moment'
 import 'moment/locale/pt-br'
 import commonStyles from './src/commonStyles'
+import Task from './src/components/Task'
 
 export default class App extends Component {
   render() {
@@ -23,11 +24,12 @@ export default class App extends Component {
           >
           <View style={styles.titleBar}>
             <Text style={styles.title}>Hoje</Text>
-            <Text>{today}</Text>
+            <Text style={styles.subtitle}>{today}</Text>
           </View>
         </ImageBackground>
         <View style={styles.taskList}>
-          <Text>Teste</Text>
+          <Task desc="Comprar livro" estimateAt={new Date()} doneAt={new Date()} />
+          <Task desc="Ler o livro" estimateAt={new Date()} doneAt={null} />
         </View>        
       </View>
     );
@@ -49,7 +51,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   title: {
-    fontSize: 50
+    fontSize: 50,
+    color: commonStyles.colors.secondary,
+    marginLeft: 20,
+    marginBottom: 20
+  },
+  subtitle: {
+    fontSize: 20,
+    color: commonStyles.colors.secondary,
+    marginLeft: 20,
+    marginBottom: 30
   }
 
 })
