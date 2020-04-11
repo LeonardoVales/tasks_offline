@@ -1,25 +1,37 @@
 import React from 'react'
 import { View,
          Text,
-         StyleSheet 
+         StyleSheet,
+         TouchableWithoutFeedback 
         } from 'react-native'
 
 import commonStyles from '../commonStyles'    
 import { Ionicons } from '@expo/vector-icons';    
+import moment from 'moment'
+import 'moment/locale/pt-br'
+
 
 export default props => {
 
     const doneOrNotStyle = props.doneAt != null ? 
         { textDecorationLine: 'line-through'} : {}
 
+    const date = props.doneAt ? props.doneAt : props.estimateAt
+
+    const formatedDate = moment(date).locale('pt-br').format('ddd, D, [de] MMMM')
+
     return (
         <View style={styles.container}>
-            <View style={styles.checkContainer}>
-                {getCheckView(props.doneAt)}
-            </View>
+            <TouchableWithoutFeedback
+                onPress={() => props.toggleTask(props.id)}
+            >
+                <View style={styles.checkContainer}>
+                    {getCheckView(props.doneAt)}
+                </View>
+            </TouchableWithoutFeedback>
             <View>
                 <Text style={[styles.desc, doneOrNotStyle]}>{props.desc}</Text>
-                <Text>{props.estimateAt + ""}</Text>
+                <Text style={styles.date}>{formatedDate}</Text>
             </View>            
         </View>
     );
@@ -80,6 +92,9 @@ const styles = StyleSheet.create({
     desc: {
         color: commonStyles.colors.mainText,
         fontSize: 15,
-
+    },
+    date: {
+        color: commonStyles.colors.subText,
+        fontSize: 12,
     }
 });
