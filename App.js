@@ -6,7 +6,8 @@ import { View,
          FlatList,
          TouchableOpacity,
          Platform,
-         StatusBar
+         StatusBar,
+         Alert,
         } from 'react-native';
 
 import todayImage from './assets/imgs/today.jpg';
@@ -14,12 +15,14 @@ import moment from 'moment'
 import 'moment/locale/pt-br'
 import commonStyles from './src/commonStyles'
 import Task from './src/components/Task'
-import { Ionicons } from '@expo/vector-icons';    
+import { Ionicons } from '@expo/vector-icons';
+import AddTask from './src/screens/AddTask'    
 
 export default class App extends Component {
 
   state = {
     showDoneTasks: true,
+    showAddTask: false,
     visibleTasks: [],
     tasks: [
       {
@@ -69,6 +72,25 @@ export default class App extends Component {
 
   }
 
+  AddTask = newTask => {
+    
+    if (!newTask.desc || !newTask.desc.trim()) {
+      Alert.alert('Dados inválidos', 'Descrição não informada')
+      return 
+    }
+
+    const tasks = [...this.state.tasks]
+    tasks.push({
+      id:         Math.random(),
+      desc:       newTask.desc,
+      estimateAt: newTask.date,
+      doneAt:     null
+    })
+
+    this.setState({tasks, showAddTask: false}, this.filterTasks)
+
+  }
+
   render() {
 
     const today = moment().locale('pt-br').format('ddd, D [de] MMMM')
@@ -76,6 +98,10 @@ export default class App extends Component {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
+        <AddTask 
+          isVisible={this.state.showAddTask} 
+          onCancel={() => this.setState({showAddTask: false})}
+          onSave={this.AddTask}  />
         <ImageBackground 
           source={todayImage}
           style={styles.background}
@@ -101,7 +127,16 @@ export default class App extends Component {
             keyExtractor={item => `${item.id}`}
             renderItem={({item}) => <Task {...item} toggleTask={this.toggleTask} />}
           />
-        </View>        
+        </View>   
+        <TouchableOpacity 
+          style={styles.addButton}
+          onPress={() => this.setState({showAddTask: true})}
+          activeOpacity={0.7}>
+          <Ionicons 
+            name='md-add' 
+            size={20} 
+            color={commonStyles.colors.secondary} />
+        </TouchableOpacity> 
       </View>
     );
   }
@@ -139,6 +174,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: Platform.OS === 'ios' ? 30 : 25,
 
+  },
+  addButton: {
+    position: 'absolute',
+    right: 30,
+    bottom: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: commonStyles.colors.today,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 
 })
