@@ -91,6 +91,11 @@ export default class App extends Component {
 
   }
 
+  deleteTask = id => {
+    const tasks = this.state.tasks.filter(task => task.id !== id) //Pega todas as takks que são diferentes do ID passado
+    this.setState({ tasks }, this.filterTasks) //e gera um novo array atualizando o status
+  }
+
   render() {
 
     const today = moment().locale('pt-br').format('ddd, D [de] MMMM')
@@ -125,7 +130,7 @@ export default class App extends Component {
           <FlatList 
             data={this.state.visibleTasks}
             keyExtractor={item => `${item.id}`}
-            renderItem={({item}) => <Task {...item} toggleTask={this.toggleTask} />}
+            renderItem={({item}) => <Task {...item} toggleTask={this.toggleTask} onDelete={this.deleteTask} />}
           />
         </View>   
         <TouchableOpacity 
