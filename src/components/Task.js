@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     date: {
         color: commonStyles.colors.subText,
         fontSize: 12,
+        fontWeight: 'bold'
     },
     right: {
         backgroundColor: 'red',

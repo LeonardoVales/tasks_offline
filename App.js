@@ -8,8 +8,10 @@ import { View,
          Platform,
          StatusBar,
          Alert,
+         AsyncStorage
         } from 'react-native';
 
+// import AsyncStorage from '@react-native-community/async-storage'
 import todayImage from './assets/imgs/today.jpg';
 import moment from 'moment'
 import 'moment/locale/pt-br'
@@ -18,30 +20,24 @@ import Task from './src/components/Task'
 import { Ionicons } from '@expo/vector-icons';
 import AddTask from './src/screens/AddTask'    
 
+
+const initialState = {
+    showDoneTasks: true,
+    showAddTask:   false,
+    visibleTasks:  [],
+    tasks:         []
+}
+
 export default class App extends Component {
 
   state = {
-    showDoneTasks: true,
-    showAddTask: false,
-    visibleTasks: [],
-    tasks: [
-      {
-        id: Math.random(),
-        desc: 'Comprar Livro de React',
-        estimateAt: new Date(),
-        doneAt: new Date(),
-      }, 
-      {
-        id: Math.random(),
-        desc: 'Ler Livro de React',
-        estimateAt: new Date(),
-        doneAt: null,
-      }
-    ]
+    ...initialState
   }
 
-  componentDidMount = () => {
-    this.filterTasks()
+  componentDidMount = async () => {
+    const stateString = await AsyncStorage.getItem('tasksState')
+    const state = JSON.parse(stateString) || initialState
+    this.setState(state, this.filterTasks)
   }
 
   toggleFilter = () => {
@@ -57,6 +53,7 @@ export default class App extends Component {
       visibleTasks = this.state.tasks.filter(pending)
     }
     this.setState({visibleTasks})
+    AsyncStorage.setItem('tasksState', JSON.stringify(this.state))
   }
 
   toggleTask = taskId => {
@@ -115,10 +112,12 @@ export default class App extends Component {
             <TouchableOpacity
               onPress={this.toggleFilter}
             >
+              
               <Ionicons 
                 name={this.state.showDoneTasks ? 'md-eye' : 'md-eye-off'} 
-                size={30} 
+                size={40} 
                 color={commonStyles.colors.secondary} />
+              
             </TouchableOpacity>
           </View>  
           <View style={styles.titleBar}>
@@ -176,9 +175,9 @@ const styles = StyleSheet.create({
   iconBar: {
     flexDirection: 'row',
     marginHorizontal: 20,
+    
     justifyContent: 'flex-end',
     marginTop: Platform.OS === 'ios' ? 30 : 25,
-
   },
   addButton: {
     position: 'absolute',
