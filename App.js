@@ -104,22 +104,17 @@ export default class App extends Component {
           isVisible={this.state.showAddTask} 
           onCancel={() => this.setState({showAddTask: false})}
           onSave={this.AddTask}  />
-        <ImageBackground 
-          source={todayImage}
-          style={styles.background}
-          >
-          <View style={styles.iconBar}>
-            <TouchableOpacity
-              onPress={this.toggleFilter}
-            >
+        <ImageBackground source={todayImage} style={styles.background}>
+          
+            <TouchableOpacity style={styles.iconBar} onPress={this.toggleFilter}>
               
-              <Ionicons 
-                name={this.state.showDoneTasks ? 'md-eye' : 'md-eye-off'} 
-                size={40} 
-                color={commonStyles.colors.secondary} />
-              
+                <Ionicons 
+                  name={this.state.showDoneTasks ? 'md-eye' : 'md-eye-off'}                   
+                  size={40} 
+                  color={commonStyles.colors.secondary} />
+            
             </TouchableOpacity>
-          </View>  
+          
           <View style={styles.titleBar}>
             <Text style={styles.title}>Hoje</Text>
             <Text style={styles.subtitle}>{today}</Text>
@@ -177,7 +172,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     
     justifyContent: 'flex-end',
-    marginTop: Platform.OS === 'ios' ? 30 : 25,
+    // marginTop: Platform.OS === 'ios' ? 30 : 25,
   },
   addButton: {
     position: 'absolute',
